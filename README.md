@@ -16,7 +16,7 @@ Configuration
 
 There are three knobs you may want to twiddle in `config.sh`.
 
-If you don't run `setup-server.sh` on the actual server, you'll at least want to set the public IP in `config.sh`.
+If you don't run `setup-server.sh` on the actual VPN server, you'll at least want to set the public IP in `config.sh`.
 
 Usage
 ---------
