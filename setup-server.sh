@@ -66,6 +66,7 @@ client-config-dir clients
 
 push "route 10.80.0.0 255.255.0.0 10.$A.$B.1"
 push "route 10.60.0.0 255.255.0.0 10.$A.$B.1"
+push "route 10.10.10.0 255.255.255.0 10.$A.$B.1"
 
 user        nobody
 group       nogroup
