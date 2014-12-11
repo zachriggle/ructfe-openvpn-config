@@ -26,8 +26,6 @@ iptables-persistent iptables-persistent/autosave_v6 boolean true
 EOF
 apt-get install -qy openvpn curl iptables-persistent
 
-cd /etc/openvpn
-
 # Certificate Authority
 >ca-key.pem      openssl genrsa 2048
 >ca-csr.pem      openssl req -new -key ca-key.pem -subj /CN=ca/
@@ -97,10 +95,18 @@ mkdir clients
 ifconfig-push $A.$B.$C.100 $A.$B.$C.1
 EOF
 
+cp -ra server.conf clients /etc/openvpn
+
 cat <<EOF
-Setup is complete.  Copy server.conf and the directory 'clients' to /etc/openvpn.
+Setup is complete.
 
-A special client by the name of 'pwnme' has been set up to have the .100 IP address.
+Use generate-client-config.sh to generate keys for each team member.
+Each machine connecting to the VPN must have a unique ID.
 
-Put this on the server you want whacked.
+**ALTERNATELY** add a line containing 'duplicate-cn' to 'server.conf'.
+This will allow different players to use the same key.
+
+In either case, a special client key has been generated for the target
+server.  It has been configured to use $A.$B.$C.100.
 EOF
+
