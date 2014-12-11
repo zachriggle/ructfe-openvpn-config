@@ -1,7 +1,33 @@
 ructfe-openvpn-config
 =====================
 
-Auto-generates the necessary configuration for using OpenVPN to connect through your router for [RuCTFe][0].
+Why does this exist?
+-----------------
+
+The RuCTFe guys are going to give us some VMs and run them in an environment where the game box is bridged to another box connected via OpenVPN to the game network.
+
+Actually bridging VMs is a pain and doesn't scale.
+
+
+Instead of
+
+```
+Game Box --> VMWare Bridged Networking --> Router Box --> OpenVPN --> Game Network
+```
+
+You'll get
+
+```
+Game Box --> OpenVPN A --> Router Box --> OpenVPN B --> Game Network
+```
+
+This lets you put either in whatever place you want.
+
+What does it do?
+-----------------
+
+This tool auto-generates the necessary configuration for using OpenVPN to connect through your router for [RuCTFe][0].
+
 
 It set up the OpenVPN server in a similar manner as the [Tinfoil VPN generator][1].  The only useful differences are the routes that it pushes down, and that it's set up for per-client configuration.
 
