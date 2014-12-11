@@ -12,11 +12,13 @@ else
 >$1-csr.pem  openssl req -new -key $1-key.pem -subj /CN=$1/
 >$1-cert.pem openssl x509 -req -in $1-csr.pem -CA ca-cert.pem -CAkey ca-key.pem -days 365
 
+source config.sh
+
 >$1.ovpn cat <<EOF
 client
 nobind
 dev tun
-remote $SERVER_IP 443 tcp
+remote $SERVER_IP $PORT $PROTO
 comp-lzo yes
 
 <key>
