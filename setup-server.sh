@@ -14,6 +14,8 @@ A=$((60 + TEAM / 256))
 C=$((80 + TEAM / 256))
 B=$((TEAM % 256))
 
+TEAM=team${TEAM}
+
 apt-get update -qq
 debconf-set-selections <<EOF
 iptables-persistent iptables-persistent/autosave_v4 boolean true
@@ -42,14 +44,16 @@ chmod 600 *-key.pem
 >>/etc/sysctl.conf echo net.ipv4.ip_forward=1
 sysctl -p
 
-iptables -A FORWARD -i team -o game -j ACCEPT
-iptables -A FORWARD -o team -i game -j ACCEPT
+iptables -F
+iptables -X
+iptables -A FORWARD -i $TEAM -o game -j ACCEPT
+iptables -A FORWARD -o $TEAM -i game -j ACCEPT
 >/etc/iptables/rules.v4 iptables-save
 
 # Write configuration files for client and server
 SERVER_IP=$(curl -s canhazip.com || echo "<insert server IP here>")
 
->server.conf cat <<EOF
+>${TEAM}_server.conf cat <<EOF
 topology    subnet
 server      10.$A.$B.0 255.255.255.0
 verb        3
@@ -57,7 +61,7 @@ keepalive   2 10
 persist-key yes
 persist-tun yes
 comp-lzo    yes
-
+duplicate-cn yes
 client-config-dir clients
 
 push "route 10.80.0.0 255.255.0.0 10.$A.$B.1"
@@ -67,7 +71,7 @@ user        nobody
 group       nogroup
 proto       $PROTO
 port        $PORT
-dev         team
+dev         $TEAM 
 dev-type    tun
 status      status.log
 
@@ -85,17 +89,12 @@ $(cat dh.pem)
 </dh>
 EOF
 
-bash ./setup-client.sh pwnme
+bash ./setup-client.sh ${TEAM}_pwnme
+bash ./setup-client.sh ${TEAM}_player
 
-service openvpn restart
 
 mkdir -p clients
->clients/pwnme cat <<EOF
+>clients/${TEAM}_pwnme cat <<EOF
 ifconfig-push 10.$A.$B.100 10.$A.$B.1
 EOF
-
-
-if [[ $EUID -eq 0 ]]; then
-  cp -ra server.conf clients /etc/openvpn
-fi
 

@@ -32,42 +32,15 @@ $ bash setup-server.sh
 ...
 Enter your team number: 129
 ...
-Setup is complete.
-
-Use generate-client-config.sh to generate keys for each team member.
-Each machine connecting to the VPN must have a unique ID.
-
-**ALTERNATELY** add a line containing 'duplicate-cn' to 'server.conf'.
-This will allow different players to use the same key.
-
-In either case, a special client key has been generated for the target
-server.  It has been configured to use 10.60.129.100.
 ```
 
-If you are not root:
+This will generate some intermediary files, but the important ones are:
 
-```sh
-$ cp -r clients server.conf /etc/openvpn/
-$ service openvpn restart
-```
+- VPN Server: `teamXX_server.conf` and `clients/`
+- Game Box:   `teamXX_pwnme.conf`
+- Teammates:  `teamXX_player.conf`
 
-By default, a client configuration for the game box is generated as `pwnme.conf`. 
-On the game box...
-
-```sh
-$ cp pwnme.conf /etc/openvpn/
-$ service openvpn restart
-```
-
-Finally, you'll want to generate configurations for each team member.
-They should install the generated configuration in the same manner.  Alternately, the configurations are compatible with [Viscosity][2].
-
-```sh
-$ bash setup-client.sh ebeip90
-$ ls | grep ebeip90
-ebeip90.conf
-```
-
-[0]: ructf.org/e/2014/network
+[0]: http://ructf.org/e/2014/network
 [1]: https://www.tinfoilsecurity.com/vpn/new
 [2]: https://www.sparklabs.com/viscosity/
+[3]: http://vpn.e.ructf.org
