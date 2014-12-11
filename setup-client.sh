@@ -14,7 +14,7 @@ else
 
 source config.sh
 
->$1.ovpn cat <<EOF
+>$1.conf cat <<EOF
 client
 nobind
 dev tun

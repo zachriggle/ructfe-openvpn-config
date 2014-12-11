@@ -4,27 +4,23 @@
 #
 # Borrowed from https://github.com/tinfoil/openvpn_autoconfig
 #
-set -e
+set -ex
 
 source config.sh
 
 read -p "Enter your team number: " TEAM
 
-A=10
-B=$((60 + TEAM / 256))
-C=$((TEAM % 256))
+A=$((60 + TEAM / 256))
+C=$((80 + TEAM / 256))
+B=$((TEAM % 256))
 
-if [[ $EUID -ne 0 ]]; then
-  echo "You must be a root user" 1>&2
-  exit 1
-fi
-
-apt-get update -q
+apt-get update -qq
 debconf-set-selections <<EOF
 iptables-persistent iptables-persistent/autosave_v4 boolean true
 iptables-persistent iptables-persistent/autosave_v6 boolean true
 EOF
-apt-get install -qy openvpn curl iptables-persistent
+apt-get install -qqy openvpn curl iptables-persistent
+
 
 # Certificate Authority
 >ca-key.pem      openssl genrsa 2048
@@ -38,7 +34,7 @@ apt-get install -qy openvpn curl iptables-persistent
 >server-cert.pem openssl x509 -req -in server-csr.pem -CA ca-cert.pem -CAkey ca-key.pem -days 365
 
 # Diffie hellman parameters
->dh.pem     openssl dhparam 2048
+>dh.pem     openssl dhparam 1024 
 
 chmod 600 *-key.pem
 
@@ -53,9 +49,9 @@ iptables -A FORWARD -o team -i game -j ACCEPT
 # Write configuration files for client and server
 SERVER_IP=$(curl -s canhazip.com || echo "<insert server IP here>")
 
->team.conf cat <<EOF
+>server.conf cat <<EOF
 topology    subnet
-server      $A.$B.$C.0 255.255.255.0
+server      10.$A.$B.0 255.255.255.0
 verb        3
 keepalive   2 10
 persist-key yes
@@ -63,6 +59,9 @@ persist-tun yes
 comp-lzo    yes
 
 client-config-dir clients
+
+push "route 10.80.0.0 255.255.0.0 10.$A.$B.1"
+push "route 10.60.0.0 255.255.0.0 10.$A.$B.1"
 
 user        nobody
 group       nogroup
@@ -86,16 +85,16 @@ $(cat dh.pem)
 </dh>
 EOF
 
-bash ./setup-player.sh pwnme
+bash ./setup-client.sh pwnme
 
 service openvpn restart
 
-mkdir clients
+mkdir -p clients
 >clients/pwnme cat <<EOF
-ifconfig-push $A.$B.$C.100 $A.$B.$C.1
+ifconfig-push 10.$A.$B.100 10.$A.$B.1
 EOF
 
-cp -ra server.conf clients /etc/openvpn
+# cp -ra server.conf clients /etc/openvpn
 
 cat <<EOF
 Setup is complete.
@@ -107,6 +106,6 @@ Each machine connecting to the VPN must have a unique ID.
 This will allow different players to use the same key.
 
 In either case, a special client key has been generated for the target
-server.  It has been configured to use $A.$B.$C.100.
+server.  It has been configured to use 10.$A.$B.100.
 EOF
 
