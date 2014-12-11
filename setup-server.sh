@@ -94,18 +94,8 @@ mkdir -p clients
 ifconfig-push 10.$A.$B.100 10.$A.$B.1
 EOF
 
-# cp -ra server.conf clients /etc/openvpn
 
-cat <<EOF
-Setup is complete.
-
-Use generate-client-config.sh to generate keys for each team member.
-Each machine connecting to the VPN must have a unique ID.
-
-**ALTERNATELY** add a line containing 'duplicate-cn' to 'server.conf'.
-This will allow different players to use the same key.
-
-In either case, a special client key has been generated for the target
-server.  It has been configured to use 10.$A.$B.100.
-EOF
+if [[ $EUID -eq 0 ]]; then
+  cp -ra server.conf clients /etc/openvpn
+fi
 
