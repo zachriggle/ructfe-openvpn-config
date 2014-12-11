@@ -23,8 +23,6 @@ Usage
 
 Run `setup-server.sh` to generate the server keys and configuration.
 
-If you run this as root, it'll also install the configuration files.
-
 ```sh
 $ git clone https://github.com/zachriggle/ructfe-openvpn-config.git
 $ cd ructfe-openvpn-config
@@ -39,6 +37,8 @@ This will generate some intermediary files, but the important ones are:
 - VPN Server: `teamXX_server.conf` and `clients/`
 - Game Box:   `teamXX_pwnme.conf`
 - Teammates:  `teamXX_player.conf`
+
+Install the files into `/etc/openvpn` on the appropriate machines.  You'll also want to put the config provided by RuCTFe as `game.conf` (or similar) on your VPN server.
 
 [0]: http://ructf.org/e/2014/network
 [1]: https://www.tinfoilsecurity.com/vpn/new
