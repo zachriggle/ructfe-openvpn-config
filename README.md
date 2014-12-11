@@ -3,13 +3,13 @@ ructfe-openvpn-config
 
 Auto-generates the necessary configuration for using OpenVPN to connect through your router for [RuCTFe][0].
 
-It set up the OpenVPN server in a similar manner as the [Tinfoil VPN generator][1].
-
-The only useful differences are the routes that it pushes down, and that it's set up for per-client configuration.
+It set up the OpenVPN server in a similar manner as the [Tinfoil VPN generator][1].  The only useful differences are the routes that it pushes down, and that it's set up for per-client configuration.
 
 Additionally, this will generate a client-config for your pwnable server at `.100`.
 
 Finally, it includes a tool for quickly generating configurations for teammates.
+
+A sample set of configuration files are included in `sample/`.
 
 Configuration
 ---------
