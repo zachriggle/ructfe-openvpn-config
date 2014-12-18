@@ -63,6 +63,7 @@ persist-tun yes
 comp-lzo    yes
 duplicate-cn yes
 client-config-dir clients
+client-to-client
 
 push "route 10.80.0.0 255.255.0.0 10.$A.$B.1"
 push "route 10.60.0.0 255.255.0.0 10.$A.$B.1"
